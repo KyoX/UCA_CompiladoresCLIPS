@@ -5,11 +5,6 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ide", "ide\ide.vcxproj", "{726A8984-F14D-460C-B2D1-8EE08D265A7F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9885EE5D-6A92-44F9-A98F-18929457881D}"
-	ProjectSection(SolutionItems) = preProject
-		..\scanner\test.cpp = ..\scanner\test.cpp
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

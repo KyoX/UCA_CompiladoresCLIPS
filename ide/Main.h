@@ -1,5 +1,5 @@
 #pragma once
-#include "../../scanner/test.cpp"
+#include "../scanner/test.cpp"
 namespace ide {
 
 	using namespace System;

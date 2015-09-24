@@ -78,17 +78,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AboutUs.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AboutUs.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="Main.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AboutUs.resx">
+      <DependentUpon>AboutUs.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ide.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="imagenes\Actions-document-save-icon.png" />
+    <Image Include="imagenes\Actions-edit-cut-icon.png" />
+    <Image Include="imagenes\Actions-media-playback-start-icon.png" />
+    <Image Include="imagenes\Actions-view-media-equalizer-icon.png" />
+    <Image Include="imagenes\Copy-icon.png" />
+    <Image Include="imagenes\FAQ-icon.png" />
+    <Image Include="imagenes\File-New-icon.png" />
+    <Image Include="imagenes\Icons-Land-Vista-Hardware-Devices-Home-Server.ico" />
+    <Image Include="imagenes\open-file-icon.png" />
+    <Image Include="imagenes\Paste-icon.png" />
+    <Image Include="imagenes\Windows-Close-Program-icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

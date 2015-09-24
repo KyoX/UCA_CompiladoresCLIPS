@@ -1,4 +1,5 @@
 #pragma once
+#include "AboutUs.h";
 
 namespace ide {
 
@@ -61,6 +62,8 @@ namespace ide {
 	private: System::Windows::Forms::RichTextBox^  richTextBox2;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
+	private: String^ bufferedText;
+
 	protected:
 	private:
 		/// <summary>
@@ -75,6 +78,7 @@ namespace ide {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Main::typeid));
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -127,6 +131,7 @@ namespace ide {
 			// 
 			// newToolStripMenuItem
 			// 
+			this->newToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"newToolStripMenuItem.Image")));
 			this->newToolStripMenuItem->Name = L"newToolStripMenuItem";
 			this->newToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::N));
 			this->newToolStripMenuItem->Size = System::Drawing::Size(156, 22);
@@ -135,6 +140,7 @@ namespace ide {
 			// 
 			// openToolStripMenuItem
 			// 
+			this->openToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"openToolStripMenuItem.Image")));
 			this->openToolStripMenuItem->Name = L"openToolStripMenuItem";
 			this->openToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::O));
 			this->openToolStripMenuItem->Size = System::Drawing::Size(156, 22);
@@ -143,13 +149,16 @@ namespace ide {
 			// 
 			// guardarToolStripMenuItem
 			// 
+			this->guardarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"guardarToolStripMenuItem.Image")));
 			this->guardarToolStripMenuItem->Name = L"guardarToolStripMenuItem";
 			this->guardarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::S));
 			this->guardarToolStripMenuItem->Size = System::Drawing::Size(156, 22);
 			this->guardarToolStripMenuItem->Text = L"Guardar";
+			this->guardarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::guardarToolStripMenuItem_Click);
 			// 
 			// salirToolStripMenuItem
 			// 
+			this->salirToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"salirToolStripMenuItem.Image")));
 			this->salirToolStripMenuItem->Name = L"salirToolStripMenuItem";
 			this->salirToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::Q));
 			this->salirToolStripMenuItem->Size = System::Drawing::Size(156, 22);
@@ -168,24 +177,30 @@ namespace ide {
 			// 
 			// cortarToolStripMenuItem
 			// 
+			this->cortarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"cortarToolStripMenuItem.Image")));
 			this->cortarToolStripMenuItem->Name = L"cortarToolStripMenuItem";
 			this->cortarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::X));
-			this->cortarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
+			this->cortarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->cortarToolStripMenuItem->Text = L"Cortar";
+			this->cortarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::cortarToolStripMenuItem_Click);
 			// 
 			// copiarToolStripMenuItem
 			// 
+			this->copiarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"copiarToolStripMenuItem.Image")));
 			this->copiarToolStripMenuItem->Name = L"copiarToolStripMenuItem";
 			this->copiarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::C));
-			this->copiarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
+			this->copiarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->copiarToolStripMenuItem->Text = L"Copiar";
+			this->copiarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::copiarToolStripMenuItem_Click);
 			// 
 			// pegarToolStripMenuItem
 			// 
+			this->pegarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pegarToolStripMenuItem.Image")));
 			this->pegarToolStripMenuItem->Name = L"pegarToolStripMenuItem";
 			this->pegarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::V));
-			this->pegarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
+			this->pegarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->pegarToolStripMenuItem->Text = L"Pegar";
+			this->pegarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::pegarToolStripMenuItem_Click);
 			// 
 			// verToolStripMenuItem
 			// 
@@ -196,8 +211,9 @@ namespace ide {
 			// 
 			// parametrosToolStripMenuItem
 			// 
+			this->parametrosToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"parametrosToolStripMenuItem.Image")));
 			this->parametrosToolStripMenuItem->Name = L"parametrosToolStripMenuItem";
-			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->parametrosToolStripMenuItem->Text = L"Parametros";
 			// 
 			// ejecutarToolStripMenuItem
@@ -209,6 +225,7 @@ namespace ide {
 			// 
 			// analisadorLexicograficoToolStripMenuItem
 			// 
+			this->analisadorLexicograficoToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"analisadorLexicograficoToolStripMenuItem.Image")));
 			this->analisadorLexicograficoToolStripMenuItem->Name = L"analisadorLexicograficoToolStripMenuItem";
 			this->analisadorLexicograficoToolStripMenuItem->ShortcutKeys = System::Windows::Forms::Keys::F5;
 			this->analisadorLexicograficoToolStripMenuItem->Size = System::Drawing::Size(219, 22);
@@ -226,6 +243,7 @@ namespace ide {
 			// 
 			// verAyudapdfToolStripMenuItem
 			// 
+			this->verAyudapdfToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"verAyudapdfToolStripMenuItem.Image")));
 			this->verAyudapdfToolStripMenuItem->Name = L"verAyudapdfToolStripMenuItem";
 			this->verAyudapdfToolStripMenuItem->Size = System::Drawing::Size(206, 22);
 			this->verAyudapdfToolStripMenuItem->Text = L"Ver ayuda.pdf";
@@ -235,6 +253,7 @@ namespace ide {
 			this->sobreLosProgramadoresToolStripMenuItem->Name = L"sobreLosProgramadoresToolStripMenuItem";
 			this->sobreLosProgramadoresToolStripMenuItem->Size = System::Drawing::Size(206, 22);
 			this->sobreLosProgramadoresToolStripMenuItem->Text = L"Sobre los programadores";
+			this->sobreLosProgramadoresToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::sobreLosProgramadoresToolStripMenuItem_Click);
 			// 
 			// splitContainer1
 			// 
@@ -294,6 +313,7 @@ namespace ide {
 			this->ClientSize = System::Drawing::Size(1008, 537);
 			this->Controls->Add(this->splitContainer1);
 			this->Controls->Add(this->menuStrip1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip1;
 			this->Name = L"Main";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
@@ -358,6 +378,25 @@ namespace ide {
 
 	}
 	
+	private: System::Void copiarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		bufferedText = richTextBox1->SelectedText;
+	}
+
+	private: System::Void pegarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (!String::IsNullOrEmpty(bufferedText)){
+			richTextBox1->SelectedText = bufferedText;
+		}
+	}
+	private: System::Void cortarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		bufferedText = richTextBox1->SelectedText;
+		richTextBox1->SelectedText = "";
+	}
+	private: System::Void guardarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void sobreLosProgramadoresToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		AboutUs^ au = gcnew AboutUs();
+		au->ShowDialog();
+	}
 };
 
 	

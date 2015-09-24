@@ -1,9 +1,12 @@
 #pragma once
 #include "AboutUs.h";
+#using <mscorlib.dll>
+#using <System.dll>
 
 namespace ide {
 
 	using namespace System;
+	using namespace System::Diagnostics;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
@@ -180,7 +183,7 @@ namespace ide {
 			this->cortarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"cortarToolStripMenuItem.Image")));
 			this->cortarToolStripMenuItem->Name = L"cortarToolStripMenuItem";
 			this->cortarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::X));
-			this->cortarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->cortarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->cortarToolStripMenuItem->Text = L"Cortar";
 			this->cortarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::cortarToolStripMenuItem_Click);
 			// 
@@ -189,7 +192,7 @@ namespace ide {
 			this->copiarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"copiarToolStripMenuItem.Image")));
 			this->copiarToolStripMenuItem->Name = L"copiarToolStripMenuItem";
 			this->copiarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::C));
-			this->copiarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->copiarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->copiarToolStripMenuItem->Text = L"Copiar";
 			this->copiarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::copiarToolStripMenuItem_Click);
 			// 
@@ -198,7 +201,7 @@ namespace ide {
 			this->pegarToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pegarToolStripMenuItem.Image")));
 			this->pegarToolStripMenuItem->Name = L"pegarToolStripMenuItem";
 			this->pegarToolStripMenuItem->ShortcutKeys = static_cast<System::Windows::Forms::Keys>((System::Windows::Forms::Keys::Control | System::Windows::Forms::Keys::V));
-			this->pegarToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->pegarToolStripMenuItem->Size = System::Drawing::Size(151, 22);
 			this->pegarToolStripMenuItem->Text = L"Pegar";
 			this->pegarToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::pegarToolStripMenuItem_Click);
 			// 
@@ -213,7 +216,7 @@ namespace ide {
 			// 
 			this->parametrosToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"parametrosToolStripMenuItem.Image")));
 			this->parametrosToolStripMenuItem->Name = L"parametrosToolStripMenuItem";
-			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 			this->parametrosToolStripMenuItem->Text = L"Parametros";
 			// 
 			// ejecutarToolStripMenuItem
@@ -245,8 +248,10 @@ namespace ide {
 			// 
 			this->verAyudapdfToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"verAyudapdfToolStripMenuItem.Image")));
 			this->verAyudapdfToolStripMenuItem->Name = L"verAyudapdfToolStripMenuItem";
+			this->verAyudapdfToolStripMenuItem->ShortcutKeys = System::Windows::Forms::Keys::F1;
 			this->verAyudapdfToolStripMenuItem->Size = System::Drawing::Size(206, 22);
 			this->verAyudapdfToolStripMenuItem->Text = L"Ver ayuda.pdf";
+			this->verAyudapdfToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::verAyudapdfToolStripMenuItem_Click);
 			// 
 			// sobreLosProgramadoresToolStripMenuItem
 			// 
@@ -318,7 +323,6 @@ namespace ide {
 			this->Name = L"Main";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"CLIPS IDE";
-			this->TopMost = true;
 			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
@@ -396,6 +400,17 @@ namespace ide {
 	private: System::Void sobreLosProgramadoresToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		AboutUs^ au = gcnew AboutUs();
 		au->ShowDialog();
+	}
+	private: System::Void verAyudapdfToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		Process^ ayudaPdf = gcnew Process();
+		try {
+			ayudaPdf->StartInfo->FileName = "ayuda.pdf";
+			ayudaPdf->Start();
+		}
+		catch (Exception^ e){
+			MessageBox::Show("No se pudo abrir el archivo ayuda.pdf", "Hay un problema", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+
 	}
 };
 

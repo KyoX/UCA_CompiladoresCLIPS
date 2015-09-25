@@ -66,6 +66,8 @@ namespace ide {
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
 	private: String^ bufferedText;
+	private: Boolean modificado;
+	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
 
 	protected:
 	private:
@@ -103,6 +105,7 @@ namespace ide {
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->richTextBox2 = (gcnew System::Windows::Forms::RichTextBox());
 			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->menuStrip1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
 			this->splitContainer1->Panel1->SuspendLayout();
@@ -280,6 +283,7 @@ namespace ide {
 			// 
 			// richTextBox1
 			// 
+			this->richTextBox1->AcceptsTab = true;
 			this->richTextBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
 			this->richTextBox1->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -290,7 +294,9 @@ namespace ide {
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->Size = System::Drawing::Size(1008, 403);
 			this->richTextBox1->TabIndex = 0;
+			this->richTextBox1->TabStop = false;
 			this->richTextBox1->Text = L"";
+			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &Main::richTextBox1_TextChanged);
 			// 
 			// richTextBox2
 			// 
@@ -335,45 +341,57 @@ namespace ide {
 
 		}
 #pragma endregion
-	private: System::Void newToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		cerrar();
+	void guardar(Boolean bajoDemanda){
+		Boolean guardar = false;
+		if (modificado && !bajoDemanda){
+			if (MessageBox::Show("El archivo parece haber sido modificado, ¿desea guardar los cambios?", "Cambios sin guardar", MessageBoxButtons::YesNo, MessageBoxIcon::Question) == System::Windows::Forms::DialogResult::Yes){
+				guardar = true;
+			}
+		}
+		if (bajoDemanda || guardar){
+			saveFileDialog1 = gcnew SaveFileDialog();
+			saveFileDialog1->Title = "Guardar archivo";
+			saveFileDialog1->ShowDialog();
+			if (saveFileDialog1->FileName != ""){
+				System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(saveFileDialog1->FileName);
+				sw->Write(richTextBox1->Text);
+				sw->Close();
+				modificado = false;
+			}
+		}
 	}
-	private: System::Void salirToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		salir();
-	}
-
 	void salir(){
-		if (richTextBox1->Text->Length > 0){ // dummie validacion
-			System::Windows::Forms::DialogResult dr;
-			dr = MessageBox::Show("Se ha modificado el archivo, desea guardar los cambios?", "Aviso", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
-			if (dr == System::Windows::Forms::DialogResult::Yes){
-						 // guardo el archivo
-			}
-			else{
-				Application::Exit();
-			}
+		if (modificado){ // dummie validacion
+			guardar(false);
+			Application::Exit();
 		}
 		else {
 			Application::Exit();
 		}
 	}
 	void cerrar(){
-		if (richTextBox1->Text->Length > 0){ // dummie validacion
-			System::Windows::Forms::DialogResult dr;
-			dr = MessageBox::Show("Parece que ha estado trabajando, desea guardar los cambios?", "Aviso", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
-			if (dr == System::Windows::Forms::DialogResult::Yes){
-				// guardo el archivo
-			}
-			else{
-				richTextBox1->Text = "";
-			}
+		if (modificado){ // dummie validacion
+			guardar(false);
+			richTextBox1->Text = "";
 		}
 		else {
 			richTextBox1->Text = "";
 		}
 	}
 
+	private: System::Void newToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		cerrar();
+	}
+	private: System::Void salirToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		salir();
+	}
+	
 	private: System::Void openToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (modificado){
+			guardar(false);
+		}
+		openFileDialog1 = gcnew OpenFileDialog();
+		openFileDialog1->Title = "Abrir archivo";
 		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK){
 			System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(openFileDialog1->FileName);
 			richTextBox1->Text = sr->ReadToEnd();
@@ -396,6 +414,7 @@ namespace ide {
 		richTextBox1->SelectedText = "";
 	}
 	private: System::Void guardarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		guardar(true);
 	}
 	private: System::Void sobreLosProgramadoresToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		AboutUs^ au = gcnew AboutUs();
@@ -411,6 +430,9 @@ namespace ide {
 			MessageBox::Show("No se pudo abrir el archivo ayuda.pdf", "Hay un problema", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
 
+	}
+	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		modificado = true; //marco que ha hecho algun cambio en el codigo
 	}
 };
 

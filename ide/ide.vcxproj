@@ -80,12 +80,16 @@
   <ItemGroup>
     <ClCompile Include="AboutUs.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Parametros.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutUs.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Main.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="Parametros.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="resource.h" />
@@ -96,6 +100,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Parametros.resx">
+      <DependentUpon>Parametros.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

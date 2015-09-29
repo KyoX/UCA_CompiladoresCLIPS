@@ -21,6 +21,9 @@
     <ClCompile Include="AboutUs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Parametros.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
@@ -32,9 +35,15 @@
     <ClInclude Include="AboutUs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Parametros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Main.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AboutUs.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>

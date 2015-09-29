@@ -1,5 +1,8 @@
 #pragma once
-#include "AboutUs.h";
+#include <windows.h>
+#include <iostream>
+#include "AboutUs.h"
+#include "Parametros.h"
 #using <mscorlib.dll>
 #using <System.dll>
 
@@ -12,6 +15,7 @@ namespace ide {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace std;
 
 	/// <summary>
 	/// Summary for Main
@@ -68,6 +72,12 @@ namespace ide {
 	private: String^ bufferedText;
 	private: Boolean modificado;
 	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
+
+	//Declaracion de parametros por defecto
+	private: String^ CURRENT_DIR;
+	private: unsigned int MAXLINEA;
+	private: unsigned int MAXDIGIT;
+	private: unsigned int MAXID;
 
 	protected:
 	private:
@@ -219,8 +229,9 @@ namespace ide {
 			// 
 			this->parametrosToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"parametrosToolStripMenuItem.Image")));
 			this->parametrosToolStripMenuItem->Name = L"parametrosToolStripMenuItem";
-			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(134, 22);
+			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(152, 22);
 			this->parametrosToolStripMenuItem->Text = L"Parametros";
+			this->parametrosToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::parametrosToolStripMenuItem_Click);
 			// 
 			// ejecutarToolStripMenuItem
 			// 
@@ -330,6 +341,8 @@ namespace ide {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"CLIPS IDE";
 			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
+			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &Main::Main_FormClosing);
+			this->Load += gcnew System::EventHandler(this, &Main::Main_Load);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
 			this->splitContainer1->Panel1->ResumeLayout(false);
@@ -383,9 +396,8 @@ namespace ide {
 		cerrar();
 	}
 	private: System::Void salirToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		salir();
+		Application::Exit();
 	}
-	
 	private: System::Void openToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		if (modificado){
 			guardar(false);
@@ -393,17 +405,21 @@ namespace ide {
 		openFileDialog1 = gcnew OpenFileDialog();
 		openFileDialog1->Title = "Abrir archivo";
 		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK){
-			System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(openFileDialog1->FileName);
-			richTextBox1->Text = sr->ReadToEnd();
-			sr->Close();
+			try{
+				System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(openFileDialog1->FileName);
+				richTextBox1->Text = sr->ReadToEnd();
+				sr->Close();
+				modificado = false;	//solo lo ha abierto, aun no hay cambios
+			}
+			catch (Exception^ e){
+				MessageBox::Show("Lamentablemente no se pudo abrir el archivo: " + openFileDialog1->FileName, "Ocurrio un error con el archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
 		}
 
 	}
-	
 	private: System::Void copiarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		bufferedText = richTextBox1->SelectedText;
 	}
-
 	private: System::Void pegarToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		if (!String::IsNullOrEmpty(bufferedText)){
 			richTextBox1->SelectedText = bufferedText;
@@ -433,6 +449,77 @@ namespace ide {
 	}
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 		modificado = true; //marco que ha hecho algun cambio en el codigo
+	}
+	private: System::Void Main_Load(System::Object^  sender, System::EventArgs^  e) {
+		try{
+
+			/*Inicializacion de parametros por defecto que no dependen del contexto*/
+			modificado = false;
+			MAXLINEA = 500;
+			MAXDIGIT = 11;
+			MAXID = 100;
+			/**********************************************************************/
+			
+			/* Inicializacion del contexto: directorio actual y posicion del scanner*/
+			char buffer[MAX_PATH];
+			GetCurrentDirectoryA(MAX_PATH, buffer);
+			CURRENT_DIR = gcnew String(buffer);
+			CURRENT_DIR = CURRENT_DIR + "\\"; //ya inicialice el directorio local, ahora a intentar leer el archivo
+			/**********************************************************************/
+			
+			System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(CURRENT_DIR + "param.txt");
+			String^ temp;
+			array<String^>^ keyValue;
+			while (sr->Peek() >= 0){
+				temp = sr->ReadLine();
+				keyValue = temp->Split(';');
+				if (String::Compare(keyValue[0],"MAXLINEA")==0){
+					MAXLINEA = System::Convert::ToInt32(keyValue[1]);
+				}
+				if (String::Compare(keyValue[0], "MAXDIGIT") == 0){
+					MAXDIGIT = System::Convert::ToInt32(keyValue[1]);
+				}
+				if (String::Compare(keyValue[0], "MAXID") == 0){
+					MAXID = System::Convert::ToInt32(keyValue[1]);
+				}
+			}
+			sr->Close();
+		}
+		catch (Exception^ e){ // fallo al leer el archivo
+			// tratando de crear un nuevo archivo de parametros
+			MessageBox::Show("Lamentablemente no se pudo abrir el archivo de parametros creando uno nuevo", "Ocurrio un error con el archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			try{
+				System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(CURRENT_DIR + "param.txt");
+				sw->WriteLine("MAXLINEA;" + MAXLINEA);
+				sw->WriteLine("MAXDIGIT;" + MAXDIGIT);
+				sw->WriteLine("MAXID;" + MAXID);
+				sw->Close();
+			}
+			catch (Exception^ e){
+				MessageBox::Show("¿Seguro que tiene permisos para escribir en el disco? porque no se pudo crear el archivo de parametros, saliendo de la aplicacion.", "Ocurrio un error con el archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				modificado = false;
+				salir();
+			}
+		}
+	}
+	private: System::Void Main_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
+		if (modificado){
+			guardar(false);
+		}
+	}
+	private: System::Void parametrosToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		Parametros^ params = gcnew Parametros();
+		params->setCurrentDir(this->CURRENT_DIR);
+		params->setMaxLinea(this->MAXLINEA);
+		params->setMaxDigit(this->MAXDIGIT);
+		params->setMaxId(this->MAXID);
+		
+		params->ShowDialog();
+
+		MAXLINEA = params->getMaxLinea();
+		MAXDIGIT = params->getMaxDigit();
+		MAXID = params->getMaxId();
+
 	}
 };
 

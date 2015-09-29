@@ -1,0 +1,4 @@
+MAXLINEA;500
+MAXDIGIT;11
+MAXID;100
+SCANNER_LOCAION;C:\Users\Nelson\Documents\Visual Studio 2013\Projects\ide\ide\scanner.exe

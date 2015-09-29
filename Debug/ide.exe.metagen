@@ -1,5 +1,6 @@
   ide.AboutUs.resources - Embedded, ContainedInManifestFile, 
   ide.Main.resources - Embedded, ContainedInManifestFile, 
+  ide.Parametros.resources - Embedded, ContainedInManifestFile, 
 ImageRuntimeVersion: v4.0.30319
 Assembly ide, Version=0.0.*, Culture=Invariant Language (Invariant Country): 
 	hash=SHA1, flags=PublicKey
@@ -18,6 +19,17 @@ Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c5619
 Class ide.AboutUs: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   :System.Windows.Forms.Form
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class ide.Parametros: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Windows.Forms.Form
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    setMaxLinea(UInt32): PrivateScope, Public, HideBySig
+    setMaxDigit(UInt32): PrivateScope, Public, HideBySig
+    setMaxId(UInt32): PrivateScope, Public, HideBySig
+    setCurrentDir(String): PrivateScope, Public, HideBySig
+    getMaxLinea(): PrivateScope, Public, HideBySig
+    getMaxDigit(): PrivateScope, Public, HideBySig
+    getMaxId(): PrivateScope, Public, HideBySig
 Class ide.Main: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   :System.Windows.Forms.Form
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName

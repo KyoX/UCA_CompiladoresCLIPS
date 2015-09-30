@@ -81,6 +81,7 @@
     <ClCompile Include="AboutUs.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parametros.cpp" />
+    <ClCompile Include="scanner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutUs.h">
@@ -93,6 +94,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="scanner.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutUs.resx">

@@ -3,6 +3,8 @@
 #include <iostream>
 #include "AboutUs.h"
 #include "Parametros.h"
+#include "scanner.h"
+#include "scanner.cpp"
 #using <mscorlib.dll>
 #using <System.dll>
 
@@ -247,6 +249,7 @@ namespace ide {
 			this->analisadorLexicograficoToolStripMenuItem->ShortcutKeys = System::Windows::Forms::Keys::F5;
 			this->analisadorLexicograficoToolStripMenuItem->Size = System::Drawing::Size(219, 22);
 			this->analisadorLexicograficoToolStripMenuItem->Text = L"Analizador lexicográfico";
+			this->analisadorLexicograficoToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::analisadorLexicograficoToolStripMenuItem_Click);
 			// 
 			// ayudaToolStripMenuItem
 			// 
@@ -520,6 +523,10 @@ namespace ide {
 		MAXDIGIT = params->getMaxDigit();
 		MAXID = params->getMaxId();
 
+	}
+	private: System::Void analisadorLexicograficoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		int result = scannerLexicografico(richTextBox1->Text,richTextBox2);
+		MessageBox::Show(result+"");
 	}
 };
 

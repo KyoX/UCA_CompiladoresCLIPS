@@ -1,4 +1,5 @@
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\vc120.pdb
+c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\tockenizador.obj
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\scanner.obj
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\parametros.obj
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\main.obj
@@ -11,7 +12,6 @@ c:\users\nelson\documents\visual studio 2013\projects\ide\debug\ide.exe
 c:\users\nelson\documents\visual studio 2013\projects\ide\debug\ide.pdb
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.res
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.vcxproj.generateresource.cache
-c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.vcxprojresolveassemblyreference.cache
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.tlog\cl.command.1.tlog
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.tlog\cl.read.1.tlog
 c:\users\nelson\documents\visual studio 2013\projects\ide\ide\debug\ide.tlog\cl.write.1.tlog

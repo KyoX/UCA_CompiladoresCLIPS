@@ -18,6 +18,7 @@ namespace ide {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace std;
+	using namespace Runtime::InteropServices;
 
 	/// <summary>
 	/// Summary for Main
@@ -75,11 +76,16 @@ namespace ide {
 	private: Boolean modificado;
 	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
 
-	//Declaracion de parametros por defecto
+	//Declaracion de parametros globales por defecto
 	private: String^ CURRENT_DIR;
 	private: unsigned int MAXLINEA;
 	private: unsigned int MAXDIGIT;
 	private: unsigned int MAXID;
+	private: array <String^>^ palabrasReservadas;
+	private: array <String^>^ TockensPalabrasReservadas;
+	private: array <String^>^ operadores;
+	private: array <String^>^ TockensOperadores;
+	
 
 	protected:
 	private:
@@ -394,6 +400,130 @@ namespace ide {
 			richTextBox1->Text = "";
 		}
 	}
+	/*
+		por falta de tiempo y debido a que visual studio me saco el dedo
+		toco inicializar de forma sucia el arreglo 
+		¯\_(-_-)_/'
+	*/
+	void inicializarPalabrasReservadas(){
+		palabrasReservadas =  gcnew array<String^>(20);
+
+		palabrasReservadas[0] = "defmodule";
+		palabrasReservadas[1] = "deftemplate";
+		palabrasReservadas[2] = "defmethod";
+		palabrasReservadas[3] = "deffunction";
+		palabrasReservadas[4] = "multislot";
+		palabrasReservadas[5] = "slot";
+		palabrasReservadas[6] = "deffacts";
+		palabrasReservadas[7] = "defrule";
+		palabrasReservadas[8] = "declare";
+		palabrasReservadas[9] = "test";
+		palabrasReservadas[10] = "assert";
+		palabrasReservadas[11] = "import";
+		palabrasReservadas[12] = "export";
+		palabrasReservadas[13] = "type";
+		palabrasReservadas[14] = "range";
+		palabrasReservadas[15] = "retract";
+		palabrasReservadas[16] = "modify";
+		palabrasReservadas[17] = "bind";
+		palabrasReservadas[18] = "printout";
+		palabrasReservadas[19] = "read";
+		// lo ordeno alfabeticamente, para la busqueda binaria
+		ordenarArreglo(palabrasReservadas,true);
+		
+	}
+
+	//Misma historia que arriba... espero que no se note cuando "amo" visual studio ...
+	void inicializarTockensPalRes(){
+		TockensPalabrasReservadas = gcnew array<String^>(20);
+		TockensPalabrasReservadas[0] = "defmoduleTock";
+		TockensPalabrasReservadas[1] = "deftemplateTock";
+		TockensPalabrasReservadas[2] = "defmethodTock";
+		TockensPalabrasReservadas[3] = "deffunctionTock";
+		TockensPalabrasReservadas[4] = "multislotTock";
+		TockensPalabrasReservadas[5] = "slotTock";
+		TockensPalabrasReservadas[6] = "deffactsTock";
+		TockensPalabrasReservadas[7] = "defruleTock";
+		TockensPalabrasReservadas[8] = "declareTock";
+		TockensPalabrasReservadas[9] = "testTock";
+		TockensPalabrasReservadas[10] = "assertTock";
+		TockensPalabrasReservadas[11] = "importTock";
+		TockensPalabrasReservadas[12] = "exportTock";
+		TockensPalabrasReservadas[13] = "typeTock";
+		TockensPalabrasReservadas[14] = "rangeTock";
+		TockensPalabrasReservadas[15] = "retractTock";
+		TockensPalabrasReservadas[16] = "modifyTock";
+		TockensPalabrasReservadas[17] = "bindTock";
+		TockensPalabrasReservadas[18] = "printoutTock";
+		TockensPalabrasReservadas[19] = "readTock";
+		//tiene que hacer juego con el de palabras reservadas
+		ordenarArreglo(TockensPalabrasReservadas, true);
+	}
+
+	//La historia se repite, suerte que tengo Sublime para hacer esto
+	void inicializarOperadores(){
+		operadores = gcnew array<String^>(16);
+		operadores[0] = "!=";
+		operadores[1] = "*";
+		operadores[2] = "**";
+		operadores[3] = "=+";
+		operadores[4] = "-";
+		operadores[5] = "/";
+		operadores[6] = "<";
+		operadores[7] = "<=";
+		operadores[8] = "<>";
+		operadores[9] = "=";
+		operadores[10] = ">";
+		operadores[11] = ">=";
+		operadores[12] = "\"";
+		operadores[13] = "(";
+		operadores[14] = ")";
+		operadores[15] = "~";
+		
+		//ordenarArreglo(operadores, true);
+	}
+
+	//Ultima inicializacion forzada... espero
+	void inicializarTockensOpe(){
+		TockensOperadores = gcnew array<String^>(16);
+		TockensOperadores[0] = "!=OpTock";
+		TockensOperadores[1] = "*OpTock";
+		TockensOperadores[2] = "**OpTock";
+		TockensOperadores[3] = "=+OpTock";
+		TockensOperadores[4] = "-OpTock";
+		TockensOperadores[5] = "/OpTock";
+		TockensOperadores[6] = "<OpTock";
+		TockensOperadores[7] = "<=OpTock";
+		TockensOperadores[8] = "<>OpTock";
+		TockensOperadores[9] = "=OpTock";
+		TockensOperadores[10] = ">OpTock";
+		TockensOperadores[11] = ">=OpTock";
+		TockensOperadores[12] = "\"OpTock";
+		TockensOperadores[13] = "(OpTock";
+		TockensOperadores[14] = ")OpTock";
+		TockensOperadores[15] = "~OpTock";
+		
+		//ordenarArreglo(TockensOperadores, true);
+	}
+
+	void ordenarArreglo(array <String^>^ arreglo, bool recursivo){
+		String^ temp;
+		for (int i = 1; i < arreglo->Length; i++){
+			temp = arreglo[i-1];
+			
+			// veo si la posicion anterior es mayor a la actual
+			if (temp->CompareTo(arreglo[i]) > 0){
+				arreglo[i - 1] = arreglo[i];
+				arreglo[i] = temp;
+				i = 1;// vuelvo a la posicion inicial para dar otra pasada
+			}
+		}
+
+		if (recursivo){
+			// volviendo a pasar para evitar dejar algo de lado
+			ordenarArreglo(arreglo, false);
+		}
+	}
 
 	private: System::Void newToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		cerrar();
@@ -461,13 +591,19 @@ namespace ide {
 			MAXLINEA = 500;
 			MAXDIGIT = 11;
 			MAXID = 100;
-			/**********************************************************************/
 			
 			/* Inicializacion del contexto: directorio actual y posicion del scanner*/
 			char buffer[MAX_PATH];
 			GetCurrentDirectoryA(MAX_PATH, buffer);
 			CURRENT_DIR = gcnew String(buffer);
 			CURRENT_DIR = CURRENT_DIR + "\\"; //ya inicialice el directorio local, ahora a intentar leer el archivo
+
+			//fuerzo la inicializacion de los arreglos
+			inicializarPalabrasReservadas();
+			inicializarTockensPalRes();
+			inicializarOperadores();
+			inicializarTockensOpe();
+			
 			/**********************************************************************/
 			
 			System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(CURRENT_DIR + "param.txt");

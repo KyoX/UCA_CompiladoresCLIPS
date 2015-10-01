@@ -280,6 +280,7 @@ namespace ide {
 			// 
 			// richTextBox1
 			// 
+			this->richTextBox1->AcceptsTab = true;
 			this->richTextBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
 			this->richTextBox1->Dock = System::Windows::Forms::DockStyle::Fill;
@@ -423,7 +424,7 @@ namespace ide {
 
 	//La historia se repite, suerte que tengo Sublime para hacer esto
 	void inicializarOperadores(){
-		operadores = gcnew array<String^>(16);
+		operadores = gcnew array<String^>(17);
 		operadores[0] = "!=";
 		operadores[1] = "*";
 		operadores[2] = "=>";
@@ -440,13 +441,14 @@ namespace ide {
 		operadores[13] = "(";
 		operadores[14] = ")";
 		operadores[15] = "~";
+		operadores[16] = "\"";
 		
 		//ordenarArreglo(operadores, true);
 	}
 
 	//Ultima inicializacion forzada... espero
 	void inicializarTockensOpe(){
-		TockensOperadores = gcnew array<String^>(16);
+		TockensOperadores = gcnew array<String^>(17);
 		TockensOperadores[0] = "!=_OpTock";
 		TockensOperadores[1] = "*_OpTock";
 		TockensOperadores[2] = "=>_OpTock";
@@ -463,6 +465,7 @@ namespace ide {
 		TockensOperadores[13] = "(_OpTock";
 		TockensOperadores[14] = ")_OpTock";
 		TockensOperadores[15] = "~_OpTock";
+		TockensOperadores[16] = "\"_OpTock";
 		
 		//ordenarArreglo(TockensOperadores, true);
 	}

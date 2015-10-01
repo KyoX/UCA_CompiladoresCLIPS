@@ -1,6 +1,7 @@
 // parametros globales
 #define EXITO 0
 #define NO_INICIALIZA 1
+#define ERROR 2
 
 using namespace System;
 using namespace System::Text::RegularExpressions;

@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <iostream>
 #include "AboutUs.h"
+#include "Resultado.h"
 #include "Parametros.h"
 #include "scanner.h"
 #include "scanner.cpp"
@@ -46,30 +47,6 @@ namespace ide {
 			}
 		}
 
-	private: System::Windows::Forms::MenuStrip^  menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  newToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
-
-	private: System::Windows::Forms::ToolStripMenuItem^  guardarToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  salirToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  editarToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  cortarToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  copiarToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  pegarToolStripMenuItem;
-
-	private: System::Windows::Forms::ToolStripMenuItem^  verToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  parametrosToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  ejecutarToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  analisadorLexicograficoToolStripMenuItem;
-
-
-	private: System::Windows::Forms::ToolStripMenuItem^  ayudaToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  verAyudapdfToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^  sobreLosProgramadoresToolStripMenuItem;
-	private: System::Windows::Forms::SplitContainer^  splitContainer1;
-	private: System::Windows::Forms::RichTextBox^  richTextBox1;
-	private: System::Windows::Forms::RichTextBox^  richTextBox2;
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
 	private: String^ bufferedText;
@@ -85,7 +62,26 @@ namespace ide {
 	private: array <String^>^ TockensPalabrasReservadas;
 	private: array <String^>^ operadores;
 	private: array <String^>^ TockensOperadores;
-	
+	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  newToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  guardarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  salirToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  editarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  cortarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  copiarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  pegarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  verToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  parametrosToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  ejecutarToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  analisadorLexicograficoToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  ayudaToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  verAyudapdfToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  sobreLosProgramadoresToolStripMenuItem;
+	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+	private: System::Windows::Forms::RichTextBox^  richTextBox1;
+	private: System::Windows::Forms::RichTextBox^  richTextBox2;
+
 
 	protected:
 	private:
@@ -102,7 +98,8 @@ namespace ide {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Main::typeid));
-			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
+			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->openToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -119,29 +116,15 @@ namespace ide {
 			this->ayudaToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->verAyudapdfToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->sobreLosProgramadoresToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->splitContainer1 = (gcnew System::Windows::Forms::SplitContainer());
+			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->richTextBox2 = (gcnew System::Windows::Forms::RichTextBox());
-			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->menuStrip1->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->BeginInit();
-			this->splitContainer1->Panel1->SuspendLayout();
-			this->splitContainer1->Panel2->SuspendLayout();
-			this->splitContainer1->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// menuStrip1
+			// openFileDialog1
 			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
-				this->fileToolStripMenuItem,
-					this->editarToolStripMenuItem, this->verToolStripMenuItem, this->ejecutarToolStripMenuItem, this->ayudaToolStripMenuItem
-			});
-			this->menuStrip1->Location = System::Drawing::Point(0, 0);
-			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(1008, 24);
-			this->menuStrip1->TabIndex = 3;
-			this->menuStrip1->Text = L"menuStrip1";
+			this->openFileDialog1->FileName = L"openFileDialog1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -237,7 +220,7 @@ namespace ide {
 			// 
 			this->parametrosToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"parametrosToolStripMenuItem.Image")));
 			this->parametrosToolStripMenuItem->Name = L"parametrosToolStripMenuItem";
-			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(152, 22);
+			this->parametrosToolStripMenuItem->Size = System::Drawing::Size(134, 22);
 			this->parametrosToolStripMenuItem->Text = L"Parametros";
 			this->parametrosToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::parametrosToolStripMenuItem_Click);
 			// 
@@ -283,66 +266,48 @@ namespace ide {
 			this->sobreLosProgramadoresToolStripMenuItem->Text = L"Sobre los programadores";
 			this->sobreLosProgramadoresToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::sobreLosProgramadoresToolStripMenuItem_Click);
 			// 
-			// splitContainer1
+			// menuStrip1
 			// 
-			this->splitContainer1->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->splitContainer1->Location = System::Drawing::Point(0, 24);
-			this->splitContainer1->Name = L"splitContainer1";
-			this->splitContainer1->Orientation = System::Windows::Forms::Orientation::Horizontal;
-			// 
-			// splitContainer1.Panel1
-			// 
-			this->splitContainer1->Panel1->Controls->Add(this->richTextBox1);
-			// 
-			// splitContainer1.Panel2
-			// 
-			this->splitContainer1->Panel2->Controls->Add(this->richTextBox2);
-			this->splitContainer1->Size = System::Drawing::Size(1008, 513);
-			this->splitContainer1->SplitterDistance = 403;
-			this->splitContainer1->TabIndex = 4;
+			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
+				this->fileToolStripMenuItem,
+					this->editarToolStripMenuItem, this->verToolStripMenuItem, this->ejecutarToolStripMenuItem, this->ayudaToolStripMenuItem
+			});
+			this->menuStrip1->Location = System::Drawing::Point(0, 0);
+			this->menuStrip1->Name = L"menuStrip1";
+			this->menuStrip1->Size = System::Drawing::Size(1008, 24);
+			this->menuStrip1->TabIndex = 3;
+			this->menuStrip1->Text = L"menuStrip1";
 			// 
 			// richTextBox1
 			// 
-			this->richTextBox1->AcceptsTab = true;
 			this->richTextBox1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(64)));
 			this->richTextBox1->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->richTextBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 11, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->richTextBox1->ForeColor = System::Drawing::Color::Moccasin;
-			this->richTextBox1->Location = System::Drawing::Point(0, 0);
+			this->richTextBox1->Location = System::Drawing::Point(0, 24);
 			this->richTextBox1->Name = L"richTextBox1";
-			this->richTextBox1->Size = System::Drawing::Size(1008, 403);
-			this->richTextBox1->TabIndex = 0;
-			this->richTextBox1->TabStop = false;
+			this->richTextBox1->Size = System::Drawing::Size(1008, 513);
+			this->richTextBox1->TabIndex = 4;
 			this->richTextBox1->Text = L"";
-			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &Main::richTextBox1_TextChanged);
 			// 
 			// richTextBox2
 			// 
-			this->richTextBox2->BackColor = System::Drawing::SystemColors::InfoText;
-			this->richTextBox2->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->richTextBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 11, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->richTextBox2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(192)),
-				static_cast<System::Int32>(static_cast<System::Byte>(0)));
-			this->richTextBox2->Location = System::Drawing::Point(0, 0);
+			this->richTextBox2->Location = System::Drawing::Point(908, 441);
 			this->richTextBox2->Name = L"richTextBox2";
-			this->richTextBox2->ReadOnly = true;
-			this->richTextBox2->Size = System::Drawing::Size(1008, 106);
-			this->richTextBox2->TabIndex = 0;
+			this->richTextBox2->Size = System::Drawing::Size(100, 96);
+			this->richTextBox2->TabIndex = 5;
 			this->richTextBox2->Text = L"";
-			// 
-			// openFileDialog1
-			// 
-			this->openFileDialog1->FileName = L"openFileDialog1";
+			this->richTextBox2->Visible = false;
 			// 
 			// Main
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1008, 537);
-			this->Controls->Add(this->splitContainer1);
+			this->Controls->Add(this->richTextBox2);
+			this->Controls->Add(this->richTextBox1);
 			this->Controls->Add(this->menuStrip1);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip1;
@@ -354,10 +319,6 @@ namespace ide {
 			this->Load += gcnew System::EventHandler(this, &Main::Main_Load);
 			this->menuStrip1->ResumeLayout(false);
 			this->menuStrip1->PerformLayout();
-			this->splitContainer1->Panel1->ResumeLayout(false);
-			this->splitContainer1->Panel2->ResumeLayout(false);
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->splitContainer1))->EndInit();
-			this->splitContainer1->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -486,22 +447,22 @@ namespace ide {
 	//Ultima inicializacion forzada... espero
 	void inicializarTockensOpe(){
 		TockensOperadores = gcnew array<String^>(16);
-		TockensOperadores[0] = "!=OpTock";
-		TockensOperadores[1] = "*OpTock";
-		TockensOperadores[2] = "**OpTock";
-		TockensOperadores[3] = "=+OpTock";
-		TockensOperadores[4] = "-OpTock";
-		TockensOperadores[5] = "/OpTock";
-		TockensOperadores[6] = "<OpTock";
-		TockensOperadores[7] = "<=OpTock";
-		TockensOperadores[8] = "<>OpTock";
-		TockensOperadores[9] = "=OpTock";
-		TockensOperadores[10] = ">OpTock";
-		TockensOperadores[11] = ">=OpTock";
-		TockensOperadores[12] = "\"OpTock";
-		TockensOperadores[13] = "(OpTock";
-		TockensOperadores[14] = ")OpTock";
-		TockensOperadores[15] = "~OpTock";
+		TockensOperadores[0] = "!=_OpTock";
+		TockensOperadores[1] = "*_OpTock";
+		TockensOperadores[2] = "**_OpTock";
+		TockensOperadores[3] = "=+_OpTock";
+		TockensOperadores[4] = "-_OpTock";
+		TockensOperadores[5] = "/_OpTock";
+		TockensOperadores[6] = "<_OpTock";
+		TockensOperadores[7] = "<=_OpTock";
+		TockensOperadores[8] = "<>_OpTock";
+		TockensOperadores[9] = "=_OpTock";
+		TockensOperadores[10] = ">_OpTock";
+		TockensOperadores[11] = ">=_OpTock";
+		TockensOperadores[12] = "\"_OpTock";
+		TockensOperadores[13] = "(_OpTock";
+		TockensOperadores[14] = ")_OpTock";
+		TockensOperadores[15] = "~_OpTock";
 		
 		//ordenarArreglo(TockensOperadores, true);
 	}
@@ -665,6 +626,13 @@ namespace ide {
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas, 
 										TockensPalabrasReservadas, operadores, TockensOperadores,
 										MAXLINEA, MAXDIGIT, MAXID);
+		if (result == ERROR){
+			MessageBox::Show("Ocurrio un error en el analizador lexicografico", "Algo salio mal", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		}
+		else{
+			Resultado^ res = gcnew Resultado(richTextBox2->Text);
+			res->ShowDialog();
+		}
 		
 	}
 };

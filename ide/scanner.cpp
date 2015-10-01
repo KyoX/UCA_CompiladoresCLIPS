@@ -90,12 +90,21 @@ static String^ removerTabs(String^ fuente){
 	fuente = fuente->Replace("\t", "");
 	return fuente;
 }
+static String^ separarOperadores(String^ fuente, array <String^>^  operadores){
+	for (int i = 0; i < operadores->Length; i++){
+		fuente = fuente->Replace(operadores[i], " " + operadores[i] + " ");
+	}
+	return fuente;
+}
+
 static String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas,
 							array <String^>^  operadores, array <String^>^  TockensOperadores, unsigned MAXDIGIT, unsigned MAXID, unsigned MAXLINEA){
 	// separando por espacios en blanco
 	if (fuente->Length > MAXLINEA){
 		return "nulo";
 	}
+
+	fuente = separarOperadores(fuente,operadores);
 
 	array<String^>^ pseudoLexeme = fuente->Split(' ');
 	String^ resultado = "";
@@ -110,7 +119,7 @@ static String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas
 				return resultado;
 			}
 
-			resultado = resultado + pseudoLexeme[j] + " -> " + busquedaBinaria(pseudoLexeme[j], palabrasReservadas, 
+			resultado = resultado + pseudoLexeme[j] + "\t -> \t" + busquedaBinaria(pseudoLexeme[j], palabrasReservadas, 
 																TockensPalabrasReservadas, operadores, TockensOperadores, MAXDIGIT, MAXID,MAXLINEA) + "\n";
 		}
 	}
@@ -122,24 +131,29 @@ static int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::Ri
 								array <String^>^ _TockensPalabrasReservadas, array <String^>^ _operadores, array <String^>^ _TockensOperadores,
 								unsigned MAXLINEA,unsigned MAXDIGIT,unsigned MAXID){
 
-	array <String^>^ palabrasReservadas;
-	array <String^>^ TockensPalabrasReservadas;
-	array <String^>^ operadores;
-	array <String^>^ TockensOperadores;
+	try{
+		array <String^>^ palabrasReservadas;
+		array <String^>^ TockensPalabrasReservadas;
+		array <String^>^ operadores;
+		array <String^>^ TockensOperadores;
 
-	palabrasReservadas = _palabrasReservadas;
-	TockensPalabrasReservadas = _TockensPalabrasReservadas;
-	operadores = _operadores;
-	TockensOperadores = _TockensOperadores;
+		palabrasReservadas = _palabrasReservadas;
+		TockensPalabrasReservadas = _TockensPalabrasReservadas;
+		operadores = _operadores;
+		TockensOperadores = _TockensOperadores;
 
-	codigoFuente = removerTabs(codigoFuente);
-	array<String^>^ lineas = codigoFuente->Split('\n');
-	//recorro todas las lineas para encontrar los lexemas
-	String^ salida = "";
-	for (unsigned i = 0; i < lineas->Length; i++){
-		salida = salida + buscarLexemas(lineas[i], palabrasReservadas, TockensPalabrasReservadas, operadores, TockensOperadores, MAXDIGIT, MAXID,MAXLINEA);
+		codigoFuente = removerTabs(codigoFuente);
+		array<String^>^ lineas = codigoFuente->Split('\n');
+		//recorro todas las lineas para encontrar los lexemas
+		String^ salida = "";
+		for (unsigned i = 0; i < lineas->Length; i++){
+			salida = salida + buscarLexemas(lineas[i], palabrasReservadas, TockensPalabrasReservadas, operadores, TockensOperadores, MAXDIGIT, MAXID,MAXLINEA);
+		}
+		richTextBox->Text = salida;
+		return EXITO;
 	}
-	richTextBox->Text = salida;
-	return EXITO;
+	catch (Exception^ e){
+		return ERROR;
+	}
 }
 

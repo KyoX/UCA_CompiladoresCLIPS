@@ -3,5 +3,5 @@
 #define NO_INICIALIZA 1
 
 using namespace System;
-
+using namespace System::Text::RegularExpressions;
 

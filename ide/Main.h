@@ -661,8 +661,11 @@ namespace ide {
 
 	}
 	private: System::Void analisadorLexicograficoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		int result = scannerLexicografico(richTextBox1->Text,richTextBox2);
-		MessageBox::Show(result+"");
+		
+		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas, 
+										TockensPalabrasReservadas, operadores, TockensOperadores,
+										MAXLINEA, MAXDIGIT, MAXID);
+		
 	}
 };
 

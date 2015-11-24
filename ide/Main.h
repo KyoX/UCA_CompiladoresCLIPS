@@ -20,6 +20,7 @@ namespace ide {
 	using namespace System::Drawing;
 	using namespace std;
 	using namespace Runtime::InteropServices;
+	using namespace System::Collections::Generic;
 
 	/// <summary>
 	/// Summary for Main
@@ -81,6 +82,7 @@ namespace ide {
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox2;
+	private: System::Windows::Forms::ToolStripMenuItem^  scannerParserToolStripMenuItem;
 
 
 	protected:
@@ -113,6 +115,7 @@ namespace ide {
 			this->parametrosToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ejecutarToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->analisadorLexicograficoToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->scannerParserToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ayudaToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->verAyudapdfToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->sobreLosProgramadoresToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -226,7 +229,10 @@ namespace ide {
 			// 
 			// ejecutarToolStripMenuItem
 			// 
-			this->ejecutarToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) { this->analisadorLexicograficoToolStripMenuItem });
+			this->ejecutarToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+				this->analisadorLexicograficoToolStripMenuItem,
+					this->scannerParserToolStripMenuItem
+			});
 			this->ejecutarToolStripMenuItem->Name = L"ejecutarToolStripMenuItem";
 			this->ejecutarToolStripMenuItem->Size = System::Drawing::Size(61, 20);
 			this->ejecutarToolStripMenuItem->Text = L"Ejecutar";
@@ -239,6 +245,15 @@ namespace ide {
 			this->analisadorLexicograficoToolStripMenuItem->Size = System::Drawing::Size(219, 22);
 			this->analisadorLexicograficoToolStripMenuItem->Text = L"Analizador lexicográfico";
 			this->analisadorLexicograficoToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::analisadorLexicograficoToolStripMenuItem_Click);
+			// 
+			// scannerParserToolStripMenuItem
+			// 
+			this->scannerParserToolStripMenuItem->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"scannerParserToolStripMenuItem.Image")));
+			this->scannerParserToolStripMenuItem->Name = L"scannerParserToolStripMenuItem";
+			this->scannerParserToolStripMenuItem->ShortcutKeys = System::Windows::Forms::Keys::F6;
+			this->scannerParserToolStripMenuItem->Size = System::Drawing::Size(219, 22);
+			this->scannerParserToolStripMenuItem->Text = L"Scanner - parser";
+			this->scannerParserToolStripMenuItem->Click += gcnew System::EventHandler(this, &Main::scannerParserToolStripMenuItem_Click);
 			// 
 			// ayudaToolStripMenuItem
 			// 
@@ -292,6 +307,7 @@ namespace ide {
 			this->richTextBox1->Size = System::Drawing::Size(1008, 513);
 			this->richTextBox1->TabIndex = 4;
 			this->richTextBox1->Text = L"";
+			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &Main::richTextBox1_TextChanged_1);
 			// 
 			// richTextBox2
 			// 
@@ -547,6 +563,7 @@ namespace ide {
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 		modificado = true; //marco que ha hecho algun cambio en el codigo
 	}
+
 	private: System::Void Main_Load(System::Object^  sender, System::EventArgs^  e) {
 		try{
 
@@ -628,7 +645,7 @@ namespace ide {
 		
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas, 
 										TockensPalabrasReservadas, operadores, TockensOperadores,
-										MAXLINEA, MAXDIGIT, MAXID);
+										MAXLINEA, MAXDIGIT, MAXID,0,richTextBox1);
 		if (result == ERROR){
 			MessageBox::Show("Ocurrio un error en el analizador lexicografico", "Algo salio mal", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
@@ -637,6 +654,64 @@ namespace ide {
 			res->ShowDialog();
 		}
 		
+	}
+	// codigo para el resaltado de las palabras clave, aun no funcional, por eso esta comentado
+	private: System::Void richTextBox1_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
+		
+
+		/*String^ texto = richTextBox1->Text;
+		int idex = -1;
+		array<Char>^ copyText = texto->ToCharArray();
+		
+		String^ palabaABuscar = "Hola";
+		int indicePivote = 0;
+
+		richTextBox1->SelectAll();
+		richTextBox1->SelectionColor = Color::Moccasin;
+		richTextBox1->DeselectAll();
+		
+		do{
+			idex = texto->IndexOf(palabaABuscar);
+			if (idex >= 0 && (copyText[indicePivote + idex-1] == ' ' || copyText[indicePivote + idex-1] == '\t' || copyText[indicePivote + idex-1] == '\n')
+				&& (copyText[indicePivote + idex + palabaABuscar->Length - 1] == ' ' || copyText[indicePivote + idex + palabaABuscar->Length - 1] == '\t' 
+				|| copyText[indicePivote + idex + palabaABuscar->Length - 1] == '\n' || copyText->Length==(indicePivote+idex+palabaABuscar->Length))){
+				
+				richTextBox1->Select(indicePivote + idex, indicePivote + idex + palabaABuscar->Length-1);
+				richTextBox1->SelectionColor = Color::Green;
+				richTextBox1->Select(indicePivote + idex + palabaABuscar->Length,richTextBox1->Text->Length);
+				richTextBox1->SelectionColor = Color::Moccasin;
+				richTextBox1->DeselectAll();
+
+				indicePivote = indicePivote + idex + palabaABuscar->Length-1;
+
+				if ((idex + palabaABuscar->Length-1) <= texto->Length){
+					texto = texto->Substring(idex + palabaABuscar->Length - 1);
+				}
+				else {
+					idex = -1;
+				}
+			}
+		} while (idex >= 0);
+		
+		richTextBox1->Select(copyText->Length, copyText->Length);*/
+				
+	}
+	private: System::Void scannerParserToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas,
+			TockensPalabrasReservadas, operadores, TockensOperadores,
+			MAXLINEA, MAXDIGIT, MAXID, 1, richTextBox1);
+		
+		Resultado^ res = gcnew Resultado(richTextBox2->Text);
+		switch (result)	{
+		case ERROR:
+			MessageBox::Show("Ocurrio un error en el analizador lexicografico", "Algo salio mal", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			break;
+		case ERROR_PARSER:
+			res->ShowDialog();
+			break;
+		default:
+			res->ShowDialog();
+		}
 	}
 };
 

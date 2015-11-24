@@ -1,15 +1,17 @@
 #include <math.h>
-#include "scanner.h"
+//#include "scanner.h"
+#include "parser.cpp"
 #using <System.dll>
-
 /*
 Por alguna razon que desconosco, el linker de visual studio se 
 apendeja con este archivo y scanner.h ... asi que toca hacer
 todas las funciones como static aqui sino da problemas de doble
 referencia (la cual no existe, pero bueno)
+
+actualizacion: poniendo la opcion /FORCE en el linker se quita el problema aparentemente
 */
 
-static String^ busquedaBinariaAux(String^ lexeme, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas){
+String^ busquedaBinariaAux(String^ lexeme, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas){
 	int liminiteInf = 0,aux;
 	int limiteSup = palabrasReservadas->Length;
 	int indice=liminiteInf;
@@ -43,7 +45,7 @@ static String^ busquedaBinariaAux(String^ lexeme, array <String^>^ palabrasReser
 }
 
 /*Realiza la busqueda y retorna un tocken si lo encuentra, nullptr en caso contrario*/
-static String^ busquedaBinaria(String^ lexeme, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas,
+String^ busquedaBinaria(String^ lexeme, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas,
 								array <String^>^  operadores, array <String^>^  TockensOperadores, unsigned MAXDIGIT, unsigned MAXID, unsigned MAXLINEA){
 	String^ tocken = nullptr;
 	
@@ -74,7 +76,7 @@ static String^ busquedaBinaria(String^ lexeme, array <String^>^ palabrasReservad
 	}
 
 	//revisa si es identificador
-	if (tocken == nullptr && Regex::IsMatch(lexeme, "[a-zA-Z][a-zA-Z0-9_]{1,}")){
+	if (tocken == nullptr && Regex::IsMatch(lexeme, "[a-zA-Z][a-zA-Z0-9_]{0,}")){
 		tocken = "identTock";
 	}
 
@@ -86,19 +88,20 @@ static String^ busquedaBinaria(String^ lexeme, array <String^>^ palabrasReservad
 
 	return tocken;
 }
-static String^ removerTabs(String^ fuente){
+String^ removerTabs(String^ fuente){
 	fuente = fuente->Replace("\t", "");
 	return fuente;
 }
-static String^ separarOperadores(String^ fuente, array <String^>^  operadores){
+String^ separarOperadores(String^ fuente, array <String^>^  operadores){
 	for (int i = 0; i < operadores->Length; i++){
 		fuente = fuente->Replace(operadores[i], " " + operadores[i] + " ");
 	}
+
 	return fuente;
 }
 
-static String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas,
-							array <String^>^  operadores, array <String^>^  TockensOperadores, unsigned MAXDIGIT, unsigned MAXID, unsigned MAXLINEA){
+String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas, array <String^>^ TockensPalabrasReservadas,
+							array <String^>^  operadores, array <String^>^  TockensOperadores, unsigned MAXDIGIT, unsigned MAXID, unsigned MAXLINEA,unsigned nivel){
 	// separando por espacios en blanco
 	if (fuente->Length > MAXLINEA){
 		return "nulo";
@@ -114,7 +117,9 @@ static String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas
 		// los espacios en blancos, el split los retorna como "", esos no me interesan
 		if (!pseudoLexeme[j]->Equals("")){ 
 			
-		// si es un comentario ignoro todo lo demas... en CLIPS los comentarios inician con ; y solo hay comentarios de linea
+		// si es un comentario ignoro todo lo demas... en CLIPS los comentarios inician con ; y solo hay comentarios de linea, ejemplo:
+		// ladoIzquierdo ; ladoDerecho
+		// solo toma en cuenta el ladoIzquierdo, lo demas lo ignora y pasa a la siguiente linea
 			if (pseudoLexeme[j]->StartsWith(";")){
 				return resultado;
 			}
@@ -127,9 +132,9 @@ static String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas
 }
 
 // este metodo se manda a llamar desde el IDE, es el que lo inicializa
-static int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ _palabrasReservadas,
+int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ _palabrasReservadas,
 								array <String^>^ _TockensPalabrasReservadas, array <String^>^ _operadores, array <String^>^ _TockensOperadores,
-								unsigned MAXLINEA,unsigned MAXDIGIT,unsigned MAXID){
+								unsigned MAXLINEA, unsigned MAXDIGIT, unsigned MAXID, unsigned nivel, System::Windows::Forms::RichTextBox^  richTextBoxOriginal){
 
 	try{
 		array <String^>^ palabrasReservadas;
@@ -147,10 +152,31 @@ static int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::Ri
 		//recorro todas las lineas para encontrar los lexemas
 		String^ salida = "";
 		for (unsigned i = 0; i < lineas->Length; i++){
-			salida = salida + buscarLexemas(lineas[i], palabrasReservadas, TockensPalabrasReservadas, operadores, TockensOperadores, MAXDIGIT, MAXID,MAXLINEA);
+			
+			//quitando los comentarios
+			if (lineas[i]->Contains(";")){
+				unsigned pos = lineas[i]->IndexOf(";");
+				lineas[i] = lineas[i]->Substring(0, pos);
+			}
+
+			salida = salida + buscarLexemas(lineas[i], palabrasReservadas, TockensPalabrasReservadas, operadores, TockensOperadores, MAXDIGIT, MAXID, MAXLINEA, nivel);
 		}
-		richTextBox->Text = salida;
-		return EXITO;
+		if (nivel == 0){
+			richTextBox->Text = salida;
+			return EXITO;
+		}else{
+			try{
+				salida = parsearCodigo(codigoFuente, lineas, richTextBoxOriginal);
+				richTextBox->Text = salida;
+			}
+			catch (Exception^ e){
+				String^ salida = "\n\n***   Estadisticas globales   ***\n";
+				salida = salida + "Errores detectados\n*****No se genero el ejecutable*****";
+				richTextBox->Text = salida;
+				return ERROR_PARSER;
+			}
+
+		}
 	}
 	catch (Exception^ e){
 		return ERROR;

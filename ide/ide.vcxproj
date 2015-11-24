@@ -52,12 +52,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
+      <ForceFileOutput>Enabled</ForceFileOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -68,6 +70,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>Main_Load</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -81,6 +85,7 @@
     <ClCompile Include="AboutUs.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parametros.cpp" />
+    <ClCompile Include="parser.cpp" />
     <ClCompile Include="Resultado.cpp" />
     <ClCompile Include="scanner.cpp" />
   </ItemGroup>
@@ -118,6 +123,7 @@
     <ResourceCompile Include="ide.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\Desktop\Actions-run2.png" />
     <Image Include="imagenes\Actions-document-save-icon.png" />
     <Image Include="imagenes\Actions-edit-cut-icon.png" />
     <Image Include="imagenes\Actions-media-playback-start-icon.png" />

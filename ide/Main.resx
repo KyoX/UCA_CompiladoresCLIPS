@@ -271,6 +271,34 @@
         E7kjRg41YNRq9TX5f7u7u8NOqhaLpccWJcIRI8few4/vLAh/AD01adG4tq6/AAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="scannerParserToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAVISURBVFhHrZZpaFxVFMdfWooiptYiKIgSxQ+1EJBWpEVREP0kQsmX+sXtmxSVSVoTpTEhTSAp
+        VghNU7NMMpklmWyTfYzZmj1ka/Z935t9MaGpLeT4P7c301lumkQ88OPdufec///c9+6bGe0wsbS05Auu
+        LC8vp4NmMAyGQCNIxZoOnJLp/0/cu3fv6MLCwjeLi4udgFZXV2ljY4M2Nzdpa2tLwGOe4zXOAc2ouYha
+        Lynz32Jubu49iHRBjNbX14UZX7Fb4rn5+XkBj3nOOYfnUdsMDV8pd7iYnp7+fnZ29uHKyorYHQvOzMwc
+        CG6Ia7gpfL4Pra+k7MFicnIyDEW0trYmjEdGRqivr59GR0cJa4Kpqal94UZYA+Md1Oik/NNjbGzsu4mJ
+        CeKdswg+U2vrXQoODqPsbBt1dnbS8PCwmB8fH98X1mAtaO6g5gtpow4Iv4PdPuCDxAa8czZraGggnS5Q
+        EB4eSXb7n6KRwcFBkbMf3AhrYrwJvbeknWv09/d7QbCZnyGbDw0NCdiktrbO0cAuN25EU3l5hWhkYGBA
+        5O3WqOAm+LEir1RaukZfX58fi/AtQzMOME9VVdUeDTABAT9TbGwcVVdXi0Z6e3tdat3hBrhZaH4sbZ9E
+        T09PDXfJIhg76O7upjt3KpUN7BIYGEzJyUaqq6unjo4OUeOssQtr893FOF/aPg4UvYYd7PDz5p04w4Ll
+        5eVKY3f4oFqtGeLMtLe3e2gx0uMf6J6Q9prW1tb2LXfICRh7UFL6FwwuexjuRWTkbzg3tUotvjtdXV08
+        viDtNa2lpSWGJ1tbWz3AGhWX5pF/4knShfopDZ2JiIgSr2t9fb2oVWlyE1i7Ju01rampqZC7w9WDxsZG
+        Kiq2UYBFE/jffp10v3ztYRwSco2MRhOVlJTgLNSJOpUeI71M0l7T8MxqeIGfnTu8kwJ7lqMB0YTZi/yj
+        fUn30yUKCgqmuLh4KioqosrKSmGu0nFGeuVKe02rqamp5GeGq5LcwnSXBhwYj1GE/jPKzE6lsrIy8Tqq
+        6t2RXjZpr2no3FZVVYX33RPelS0vTd2AJMj8IsVaL1FBYb54Y7iGUentgvVEaa9pFRUVUYBUsGBWjkVp
+        7M5Vsw8lpodSYWGhuCMqPScCpb2mlZaWXgCkgg9VepZRaajErFG45TzlF+SKWpWm5CNpr2nFxcXeYBuQ
+        irQMg9rMHRzO0ORzlGSKpvz8fKWWZBUck/aPw263WwF+6Vzh022x6tWGTlw1nKIYfQi+Ca2Ul5cn6lR6
+        ktvS9kkUFBScBTuAnOGdGC0JSlMmyPAq/Z7wI5lMJnwBZYt8dw03HgH1T3Jubq4FkDM5OTlkMMV5GF8x
+        nqDI+C8pKUlPGRkZIs+9dg9uSjvPsNlsL2EXs7wTZ/QpsQ7jy6ZnKSzuc/oj/hZZLBbKzMx0yd2HYXg8
+        L+3UAcFz2NF93tUuicm3cMCO0q/xH9LN2OuUkpIinrVzzgFYh/bB/iFD/BOwxSZpaWmUYkyimIQI0uv1
+        ZDabxRyvHYI1cF7KHyxSU1PP4haP821mUz5kfOXPh6QfWqel7OEChsdhHGM0Gh8C/Nodim3UXofGc1Lu
+        YIGOvYA3Cn3AGfApCIBgh8FgeABoH7aRexc1P8jad4EPNI+ztrTZO5D0MggDVWAAzIJl8DeEtrCrRzDY
+        wUHcgZmAxzzHa5zDuWBF1g4C1ooCPtJm70CSN/CTBVZQBppANxgCk2BqD3iNczi3GXAta7DWRXBS2jw9
+        kHgEPANeAK+AN8Db4Ax4H3ywB7zGOafBm4BrWYO1jkh5p9C0fwF0lUbXxScLOgAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="verAyudapdfToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAZlJREFUOE9j

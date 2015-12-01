@@ -134,7 +134,8 @@ String^ buscarLexemas(String^ fuente, array <String^>^ palabrasReservadas, array
 // este metodo se manda a llamar desde el IDE, es el que lo inicializa
 int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ _palabrasReservadas,
 								array <String^>^ _TockensPalabrasReservadas, array <String^>^ _operadores, array <String^>^ _TockensOperadores,
-								unsigned MAXLINEA, unsigned MAXDIGIT, unsigned MAXID, unsigned nivel, System::Windows::Forms::RichTextBox^  richTextBoxOriginal){
+								unsigned MAXLINEA, unsigned MAXDIGIT, unsigned MAXID, unsigned nivel, System::Windows::Forms::RichTextBox^  richTextBoxOriginal,
+								array <String^>^codigoP, String^ FUENTE_DIR){
 
 	try{
 		array <String^>^ palabrasReservadas;
@@ -166,7 +167,7 @@ int scannerLexicografico(String^ codigoFuente, System::Windows::Forms::RichTextB
 			return EXITO;
 		}else{
 			try{
-				salida = parsearCodigo(codigoFuente, lineas, richTextBoxOriginal);
+				salida = parsearCodigo(codigoFuente, lineas, richTextBoxOriginal,codigoP,FUENTE_DIR);
 				richTextBox->Text = salida;
 			}
 			catch (Exception^ e){

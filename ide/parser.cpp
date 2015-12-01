@@ -10,13 +10,21 @@ class TDS
 public:
 	TDS();
 	~TDS();
-	void insert(char* _nombre, int _tipo);
+	void insert(String^ _nombre, int _tipoVariable, int _tipoRetorno, String^ _valor, int _indiceStack);
 	char* getNombre();
-private:
-	char* nombre;
-	int tipoRetorno;
-	int tipoVariable;			//
+	char* getValor();
+	int getTipoRetorno();
+	int getTipoVariable();
+	void setNivel(int _nivel);
+	void setValue(String^ valor);
 
+private:
+	char nombre[100];
+	int tipoRetorno;
+	int tipoVariable;			//INTEGER, STRING, BOOLEAN, ...
+	int nivel;
+	char valor[100];
+	int indiceStack;			// posicion en la pila en la que guardara
 };
 
 TDS::TDS()
@@ -26,18 +34,38 @@ TDS::TDS()
 TDS::~TDS()
 {
 }
+void StringToArray(String^ cad, char* arreglo){
+	//char arreglo[100] = { 0 };
+	sprintf(arreglo, "%s", cad);
+	//return arreglo;
+}
 
-void TDS::insert(char* _nombre, int _tipo){
-	strcpy(nombre, _nombre);
-	tipo = tipo;
+void TDS::insert(String^ _nombre, int _tipoVariable, int _tipoRetorno,String^ _valor, int _indiceStack){
+	StringToArray(_nombre,nombre);
+	tipoVariable = _tipoVariable;
+	tipoRetorno = _tipoRetorno;
+	StringToArray(_valor, valor);
+	indiceStack = _indiceStack;
 }
 
 char* TDS::getNombre(){
 	return nombre;
 }
 
+char* TDS::getValor(){
+	return valor;
+}
 
-std::list<TDS> tablaDeSimbolos;
+void TDS::setNivel(int _nivel){
+	nivel = _nivel;
+}
+
+void TDS::setValue(String^ _valor){
+	StringToArray(_valor, valor);
+}
+
+TDS* tablaDeSimbolos[MAX_SIZE_SYMBOLS];
+int indexTablaSimbolos = 0;
 
 int readFunction(array<String^>^ temp, int index){
 	if (temp[index]->Equals("(") && temp[index + 1]->Equals("read")){
@@ -117,8 +145,24 @@ int retractFucntion(array<String^>^ temp, int index){
 	return -1;
 }
 int assertFunction(array<String^>^ temp, int index){
-	if (temp[index]->Equals("(") && temp[index + 1]->Equals("assert") && propiedad_valor(temp,index+2) && temp[index + 6]->Equals(")"))
+	if (temp[index]->Equals("(") && temp[index + 1]->Equals("assert") && propiedad_valor(temp, index + 2) && temp[index + 6]->Equals(")")){
+		TDS* simbolo = new TDS();
+		bool existe = false;
+		simbolo->insert(temp[index + 3], FACT, NO_RETORNO, temp[index + 4], -1);
+		for (int i = 0; i < indexTablaSimbolos; i++){
+			if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre())==0){
+				tablaDeSimbolos[i]->setValue(temp[index + 4]);
+				existe = true;
+				break;
+			}
+		}
+		if (!existe) {
+			tablaDeSimbolos[indexTablaSimbolos] = simbolo;
+			indexTablaSimbolos++;
+		}
 		return 6;
+	}
+		
 	return -1;
 }
 int or_ce(array<String^>^ temp, int index){
@@ -400,8 +444,10 @@ int defTemplate(array<String^>^ temp, int index){
 	return -1;
 }
 int deffacts(array<String^>^ temp, int index){
-	if (temp[index]->Equals("(") && temp[index + 1]->Equals("deffacts") && Regex::IsMatch(temp[index + 2], "[a-zA-Z][a-zA-Z0-9_]{0,}") && functionCall(temp, index + 3) > 0 && temp[index + 8]->Equals(")"))
+	if (temp[index]->Equals("(") && temp[index + 1]->Equals("deffacts") && Regex::IsMatch(temp[index + 2], "[a-zA-Z][a-zA-Z0-9_]{0,}") && functionCall(temp, index + 3) > 0 && temp[index + 8]->Equals(")")){
 		return 8;
+	}
+		
 	return -1;
 }
 int deffunction(array<String^>^ temp, int index){
@@ -475,6 +521,11 @@ int if_function(array<String^>^ temp, int index){
 	}
 	return -1;
 }
+
+String^ generarCodigoP(String^ codigo){
+	return "algo";
+}
+
 String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::Forms::RichTextBox^  richTextBox){
 	array<String^>^ temp = tockensIndividuales->ToArray();
 	String^ salida = "\n\n***   Estadisticas globales   ***\n";
@@ -548,7 +599,7 @@ String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::
 	return salida;
 }
 
-String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, System::Windows::Forms::RichTextBox^  richTextBox){
+String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ codigoP, String^ FUENTE_DIR){
 	int cantidadParentesisApertura = codigoFuente->Split('(')->Length;
 	int cantidadParentesisCierre = codigoFuente->Split(')')->Length;
 	
@@ -561,6 +612,8 @@ String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, Syst
 	// separo con espacios 
 	array<String^>^ temp;
 	List<String^>^ tockensIndividuales = gcnew List<String^>();
+
+	//codigoP a partir de codigoSeparado
 
 	for (int i = 0; i < codigoSeparado->Length; i++){
 		codigoSeparado[i] = codigoSeparado[i]->Replace("(", " ( ")->Replace(")", " ) ")->Replace("=", " = ");

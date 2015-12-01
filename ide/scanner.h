@@ -13,6 +13,8 @@
 #define FLOAT 22
 #define SYMBOL 23
 #define BOOLEAN 24
+#define MAX_SIZE_SYMBOLS 200
+#define NO_RETORNO 999
 
 using namespace System;
 using namespace System::Text::RegularExpressions;

@@ -56,6 +56,7 @@ namespace ide {
 
 	//Declaracion de parametros globales por defecto
 	private: String^ CURRENT_DIR;
+	private: String^ FUENTE_DIR;
 	private: unsigned int MAXLINEA;
 	private: unsigned int MAXDIGIT;
 	private: unsigned int MAXID;
@@ -63,6 +64,7 @@ namespace ide {
 	private: array <String^>^ TockensPalabrasReservadas;
 	private: array <String^>^ operadores;
 	private: array <String^>^ TockensOperadores;
+	private: array <String^>^ codigoP;
 	private: System::Windows::Forms::ToolStripMenuItem^  fileToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  newToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  openToolStripMenuItem;
@@ -520,6 +522,9 @@ namespace ide {
 		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK){
 			try{
 				System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(openFileDialog1->FileName);
+				FUENTE_DIR = openFileDialog1->FileName;
+				FUENTE_DIR = FUENTE_DIR->Substring(0, FUENTE_DIR->LastIndexOf("\\")+1);
+
 				richTextBox1->Text = sr->ReadToEnd();
 				sr->Close();
 				modificado = false;	//solo lo ha abierto, aun no hay cambios
@@ -641,11 +646,12 @@ namespace ide {
 		MAXID = params->getMaxId();
 
 	}
+
+	// solo el scanner que todo este bien escrito
 	private: System::Void analisadorLexicograficoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
-		
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas, 
 										TockensPalabrasReservadas, operadores, TockensOperadores,
-										MAXLINEA, MAXDIGIT, MAXID,0,richTextBox1);
+										MAXLINEA, MAXDIGIT, MAXID, 0, richTextBox1, codigoP, FUENTE_DIR);
 		if (result == ERROR){
 			MessageBox::Show("Ocurrio un error en el analizador lexicografico", "Algo salio mal", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
@@ -696,10 +702,14 @@ namespace ide {
 		richTextBox1->Select(copyText->Length, copyText->Length);*/
 				
 	}
+	
+	// scanner y parser (2da entrega)
 	private: System::Void scannerParserToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas,
 			TockensPalabrasReservadas, operadores, TockensOperadores,
-			MAXLINEA, MAXDIGIT, MAXID, 1, richTextBox1);
+			MAXLINEA, MAXDIGIT, MAXID, 1, richTextBox1,codigoP,FUENTE_DIR);
+
+
 		
 		Resultado^ res = gcnew Resultado(richTextBox2->Text);
 		switch (result)	{

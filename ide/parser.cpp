@@ -72,6 +72,20 @@ int readFunction(array<String^>^ temp, int index){
 		if (temp[index + 2]->Equals(")"))
 			return 2;
 		if (temp[index + 3]->Equals(")") && Regex::IsMatch(temp[index + 2], "[a-zA-Z][a-zA-Z0-9_]{0,}") && !temp[index + 2]->Contains("\"")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 2], STRING, NO_RETORNO, " ", -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					tablaDeSimbolos[i]->setValue(temp[index + 2]);
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				tablaDeSimbolos[indexTablaSimbolos] = simbolo;
+				indexTablaSimbolos++;
+			}
 			return 3;
 		}
 	}
@@ -80,20 +94,63 @@ int readFunction(array<String^>^ temp, int index){
 int openFunction(array<String^>^ temp, int index){
 	if (temp[index]->Equals("(") && temp[index + 1]->Equals("open") 
 		&& Regex::IsMatch(temp[index + 2], "[\"].{0,}[\"]") && Regex::IsMatch(temp[index + 3], "[a-zA-Z][a-zA-Z0-9_]{0,}")){
-		if (temp[index + 4]->Equals(")"))
+		if (temp[index + 4]->Equals(")")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 2], -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					tablaDeSimbolos[i]->setValue(temp[index + 2]);
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				tablaDeSimbolos[indexTablaSimbolos] = simbolo;
+				indexTablaSimbolos++;
+			}
 			return 4;
+		}
 		if (temp[index + 5]->Equals(")") && Regex::IsMatch(temp[index + 4], "[\"]w[\"]")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 2], -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					tablaDeSimbolos[i]->setValue(temp[index + 2]);
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				tablaDeSimbolos[indexTablaSimbolos] = simbolo;
+				indexTablaSimbolos++;
+			}
 			return 5;
 		}
 	}
-	bool test = Regex::IsMatch(temp[index + 3], "[a-zA-Z][a-zA-Z0-9_]{0,}");
+	//bool test = Regex::IsMatch(temp[index + 3], "[a-zA-Z][a-zA-Z0-9_]{0,}");
 	return -1;
 }
 int closeFunction(array<String^>^ temp, int index){
 	if (temp[index]->Equals("(") && temp[index + 1]->Equals("close")){
-		if (temp[index + 2]->Equals(")"))
+		if (temp[index + 2]->Equals(")")){
 			return 2;
+		}
 		if (temp[index + 3]->Equals(")") && Regex::IsMatch(temp[index + 2], "[a-zA-Z][a-zA-Z0-9_]{0,}") && !temp[index + 2]->Contains("\"")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 2], SYMBOL, NO_RETORNO, temp[index + 2], -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				// error en tiempo de ejecucion... la variable no existe
+				return -1;
+			}
 			return 3;
 		}
 	}
@@ -101,10 +158,38 @@ int closeFunction(array<String^>^ temp, int index){
 }
 int printOutFunction(array<String^>^ temp, int index){
 	if (temp[index]->Equals("(") && temp[index + 1]->Equals("printout") && Regex::IsMatch(temp[index + 2], "[a-zA-Z\"][a-zA-Z0-9_\"]{0,}")){
-		if (temp[index + 3]->Equals(")"))
+		if (temp[index + 3]->Equals(")")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 4], -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				// error en tiempo de ejecucion... la variable no existe
+				return -1;
+			}
 			return 3;
-		if (temp[index + 5]->Equals(")") && Regex::IsMatch(temp[index + 3], "[a-zA-Z0-9_\"]{0,}") && temp[index + 4]->Equals("crlf"))
+		}
+		if (temp[index + 5]->Equals(")") && Regex::IsMatch(temp[index + 3], "[a-zA-Z0-9_\"]{0,}") && temp[index + 4]->Equals("crlf")){
+			TDS* simbolo = new TDS();
+			bool existe = false;
+			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 4], -1);
+			for (int i = 0; i < indexTablaSimbolos; i++){
+				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+					existe = true;
+					break;
+				}
+			}
+			if (!existe) {
+				// error en tiempo de ejecucion... la variable no existe
+				return -1;
+			}
 			return 5;
+		}
 	}
 	return -1;
 }
@@ -425,8 +510,23 @@ int loop_for_count(array<String^>^ temp, int index){
 
 int global_assignment(array<String^>^ temp, int index){
 	
-	if (Regex::IsMatch(temp[index], "[?][\*][a-zA-Z][a-zA-Z0-9_]{0,}[\*]") && temp[index + 1]->Equals("=") && Regex::IsMatch(temp[index + 2], "[a-zA-Z0-9_\"]{0,}"))
+	if (Regex::IsMatch(temp[index], "[?][\*][a-zA-Z][a-zA-Z0-9_]{0,}[\*]") && temp[index + 1]->Equals("=") && Regex::IsMatch(temp[index + 2], "[a-zA-Z0-9_\"]{0,}")){
+		TDS* simbolo = new TDS();
+		bool existe = false;
+		simbolo->insert(temp[index], GLOBAL, NO_RETORNO, temp[index + 2], -1);
+		for (int i = 0; i < indexTablaSimbolos; i++){
+			if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
+				tablaDeSimbolos[i]->setValue(temp[index + 4]);
+				existe = true;
+				break;
+			}
+		}
+		if (!existe) {
+			tablaDeSimbolos[indexTablaSimbolos] = simbolo;
+			indexTablaSimbolos++;
+		}
 		return 2;
+	}
 	return -1;
 }
 int defglobal(array<String^>^ temp, int index){
@@ -522,11 +622,17 @@ int if_function(array<String^>^ temp, int index){
 	return -1;
 }
 
-String^ generarCodigoP(String^ codigo){
+String^ generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_FILE){
+	String^ nombre;
+	
+	//sentencias de almacenado de las variables
+	for (int i = 0; i < indexTablaSimbolos; i++){
+		nombre = gcnew String(tablaDeSimbolos[i]->getNombre());
+	}
 	return "algo";
 }
 
-String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::Forms::RichTextBox^  richTextBox){
+String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::Forms::RichTextBox^  richTextBox, array<String^>^ codigoSeparado, String^ FUENTE_DIR, String^ NOMBRE_FILE){
 	array<String^>^ temp = tockensIndividuales->ToArray();
 	String^ salida = "\n\n***   Estadisticas globales   ***\n";
 
@@ -592,6 +698,8 @@ String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::
 	
 	if (!error){
 		salida = salida + "***  No se detectaron errores ***";
+		salida = salida + "\n Generando el codigo P";
+		generarCodigoP(codigoSeparado, FUENTE_DIR, NOMBRE_FILE);
 	}
 	else{
 		salida = salida + "Errores detectados\n*****No se genero el ejecutable*****";
@@ -599,7 +707,7 @@ String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::
 	return salida;
 }
 
-String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ codigoP, String^ FUENTE_DIR){
+String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, System::Windows::Forms::RichTextBox^  richTextBox, array <String^>^ codigoP, String^ FUENTE_DIR, String^ NOMBRE_FILE){
 	int cantidadParentesisApertura = codigoFuente->Split('(')->Length;
 	int cantidadParentesisCierre = codigoFuente->Split(')')->Length;
 	
@@ -631,6 +739,5 @@ String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, Syst
 
 	
 	
-	return perteneceSemantico(tockensIndividuales,richTextBox);
+	return perteneceSemantico(tockensIndividuales, richTextBox, codigoSeparado, FUENTE_DIR, NOMBRE_FILE);
 }
-

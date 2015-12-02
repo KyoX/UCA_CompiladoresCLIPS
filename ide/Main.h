@@ -57,6 +57,7 @@ namespace ide {
 	//Declaracion de parametros globales por defecto
 	private: String^ CURRENT_DIR;
 	private: String^ FUENTE_DIR;
+	private: String^ NOMBRE_FILE;
 	private: unsigned int MAXLINEA;
 	private: unsigned int MAXDIGIT;
 	private: unsigned int MAXID;
@@ -85,6 +86,7 @@ namespace ide {
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox2;
 	private: System::Windows::Forms::ToolStripMenuItem^  scannerParserToolStripMenuItem;
+	private: System::Windows::Forms::ToolStripMenuItem^  ejecutarToolStripMenuItem1;
 
 
 	protected:
@@ -124,6 +126,7 @@ namespace ide {
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->richTextBox2 = (gcnew System::Windows::Forms::RichTextBox());
+			this->ejecutarToolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -231,9 +234,9 @@ namespace ide {
 			// 
 			// ejecutarToolStripMenuItem
 			// 
-			this->ejecutarToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
+			this->ejecutarToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
 				this->analisadorLexicograficoToolStripMenuItem,
-					this->scannerParserToolStripMenuItem
+					this->scannerParserToolStripMenuItem, this->ejecutarToolStripMenuItem1
 			});
 			this->ejecutarToolStripMenuItem->Name = L"ejecutarToolStripMenuItem";
 			this->ejecutarToolStripMenuItem->Size = System::Drawing::Size(61, 20);
@@ -319,6 +322,14 @@ namespace ide {
 			this->richTextBox2->TabIndex = 5;
 			this->richTextBox2->Text = L"";
 			this->richTextBox2->Visible = false;
+			// 
+			// ejecutarToolStripMenuItem1
+			// 
+			this->ejecutarToolStripMenuItem1->Name = L"ejecutarToolStripMenuItem1";
+			this->ejecutarToolStripMenuItem1->ShortcutKeys = System::Windows::Forms::Keys::F7;
+			this->ejecutarToolStripMenuItem1->Size = System::Drawing::Size(219, 22);
+			this->ejecutarToolStripMenuItem1->Text = L"Compilar y Ejecutar";
+			this->ejecutarToolStripMenuItem1->Click += gcnew System::EventHandler(this, &Main::ejecutarToolStripMenuItem1_Click);
 			// 
 			// Main
 			// 
@@ -523,14 +534,22 @@ namespace ide {
 			try{
 				System::IO::StreamReader ^ sr = gcnew System::IO::StreamReader(openFileDialog1->FileName);
 				FUENTE_DIR = openFileDialog1->FileName;
+
+				int t1 = FUENTE_DIR->LastIndexOf("\\")+1;
+				int t2 = FUENTE_DIR->LastIndexOf(".");
+				
+
+				NOMBRE_FILE = FUENTE_DIR->Substring(t1,t2-t1);
 				FUENTE_DIR = FUENTE_DIR->Substring(0, FUENTE_DIR->LastIndexOf("\\")+1);
+				
 
 				richTextBox1->Text = sr->ReadToEnd();
 				sr->Close();
 				modificado = false;	//solo lo ha abierto, aun no hay cambios
 			}
 			catch (Exception^ e){
-				MessageBox::Show("Lamentablemente no se pudo abrir el archivo: " + openFileDialog1->FileName, "Ocurrio un error con el archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				//MessageBox::Show("Lamentablemente no se pudo abrir el archivo: " + openFileDialog1->FileName, "Ocurrio un error con el archivo", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				MessageBox::Show(e->Message);
 			}
 		}
 
@@ -651,7 +670,7 @@ namespace ide {
 	private: System::Void analisadorLexicograficoToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas, 
 										TockensPalabrasReservadas, operadores, TockensOperadores,
-										MAXLINEA, MAXDIGIT, MAXID, 0, richTextBox1, codigoP, FUENTE_DIR);
+										MAXLINEA, MAXDIGIT, MAXID, 0, richTextBox1, codigoP, FUENTE_DIR, NOMBRE_FILE);
 		if (result == ERROR){
 			MessageBox::Show("Ocurrio un error en el analizador lexicografico", "Algo salio mal", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
@@ -707,7 +726,7 @@ namespace ide {
 	private: System::Void scannerParserToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 		int result = scannerLexicografico(richTextBox1->Text, richTextBox2, palabrasReservadas,
 			TockensPalabrasReservadas, operadores, TockensOperadores,
-			MAXLINEA, MAXDIGIT, MAXID, 1, richTextBox1,codigoP,FUENTE_DIR);
+			MAXLINEA, MAXDIGIT, MAXID, 1, richTextBox1, codigoP, FUENTE_DIR, NOMBRE_FILE);
 
 
 		
@@ -722,6 +741,9 @@ namespace ide {
 		default:
 			res->ShowDialog();
 		}
+	}
+	// tercera parte (todo junto)
+	private: System::Void ejecutarToolStripMenuItem1_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
 };
 

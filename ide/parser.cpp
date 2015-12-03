@@ -164,7 +164,7 @@ int printOutFunction(array<String^>^ temp, int index){
 		if (temp[index + 3]->Equals(")")){
 			TDS* simbolo = new TDS();
 			bool existe = false;
-			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 4], -1);
+			simbolo->insert(temp[index + 2], SYMBOL, NO_RETORNO, temp[index + 2], -1);
 			for (int i = 0; i < indexTablaSimbolos; i++){
 				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
 					existe = true;
@@ -180,16 +180,12 @@ int printOutFunction(array<String^>^ temp, int index){
 		if (temp[index + 5]->Equals(")") && Regex::IsMatch(temp[index + 3], "[a-zA-Z0-9_\"]{0,}") && temp[index + 4]->Equals("crlf")){
 			TDS* simbolo = new TDS();
 			bool existe = false;
-			simbolo->insert(temp[index + 3], SYMBOL, NO_RETORNO, temp[index + 4], -1);
+			simbolo->insert(temp[index + 2], SYMBOL, NO_RETORNO, temp[index + 3], -1);
 			for (int i = 0; i < indexTablaSimbolos; i++){
 				if (strcmp(simbolo->getNombre(), tablaDeSimbolos[i]->getNombre()) == 0){
 					existe = true;
 					break;
 				}
-			}
-			if (!existe) {
-				// error en tiempo de ejecucion... la variable no existe
-				return -1;
 			}
 			return 5;
 		}
@@ -640,17 +636,73 @@ int buscarVariableEnStack(String^ variable){
 	return -1;
 }
 
+List<String^>^ generarP_printout(String^ linea){
+	List<String^>^ bloque = gcnew List<String^>();
+
+	return bloque;
+}
+
+List<String^>^ generarP_close(String^ linea){
+	List<String^>^ bloque = gcnew List<String^>();
+	array<String^>^ codigoSeparado = linea->Trim()->Split(' ');
+
+	//( close myFile )
+	//0   1     2    3
+	
+	if (codigoSeparado[2]->Contains(")")){
+		bloque->Add("OPR 0 23");	//cierra todos los flujos abiertos
+	}
+	else {
+		int posicion = buscarVariableEnStack(codigoSeparado[2]);
+		bloque->Add("CAR 0 " + posicion);
+		bloque->Add("OPR 0 22");	//cierra solo este flujo
+	}
+	return bloque;
+}
+List<String^>^ generarP_open(String^ linea){
+	List<String^>^ bloque = gcnew List<String^>();
+	array<String^>^ codigoSeparado = linea->Trim()->Split(' ');
+
+	int posicion = buscarVariableEnStack(codigoSeparado[3]);
+	bloque->Add("CAR 0 " + posicion);
+	if (codigoSeparado[4]->ToUpper()->Contains("W")){
+		bloque->Add("OPR 0 18");	//abrir con escritura
+	}
+	else {
+		bloque->Add("OPR 0 17");	//abrir solo lectura
+	}
+	return bloque;
+}
+
+List<String^>^ generarP_read(String^ linea){
+	List<String^>^ bloque = gcnew List<String^>();
+	
+	return bloque;
+}
+
 List<String^>^ evaluarLinea(String^ lineaCodigo){
 	List<String^>^ bloque = gcnew List<String^>();
 
 	if (lineaCodigo->Length > 0){
+		if (lineaCodigo->Contains("open")){
+			bloque = generarP_open(lineaCodigo);
+		}
+		if (lineaCodigo->Contains("printout")){
+			bloque = generarP_printout(lineaCodigo);
+		}
+		if (lineaCodigo->Contains("read")){
+			bloque = generarP_read(lineaCodigo);
+		}
+		if (lineaCodigo->Contains("close")){
+			bloque = generarP_close(lineaCodigo);
+		}
 
 	}
 
 	return bloque;
 }
 
-void generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_FILE){
+String^ generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_FILE){
 	String^ nombre;
 	String^ valor;
 	String^ codP;
@@ -664,7 +716,7 @@ void generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_F
 		tablaDeSimbolos[i]->setNivel(0);				// 0 significa que es global, no esta dentro de ninguna funcion
 		tablaDeSimbolos[i]->setIndiceStack(indexStack);
 		indexStack++;
-		codP = "LIT 0 "+valor;
+		codP = "ALM 0 "+valor;
 		programa->Add(codP);
 	}
 	
@@ -678,14 +730,20 @@ void generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_F
 	}
 
 
-	// creacion del archivo
-	System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(FUENTE_DIR+NOMBRE_FILE+".ob");
-	for each (String^ instruccion in programa) {
-		sw->WriteLine(instruccion);
+	programa->Add("OPR 0 0");	//fin de programa
+	
+	try{
+		// creacion del archivo
+		System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(FUENTE_DIR + NOMBRE_FILE + ".ob");
+		for each (String^ instruccion in programa) {
+			sw->WriteLine(instruccion);
+		}
+		sw->Close();
+		return "...\nCodigo P generado";
 	}
-	sw->Close();
-
-
+	catch (Exception^ e){
+		return "No se pudo generar el codigo P por falta de permisos de escritura en: " + FUENTE_DIR;
+	}
 
 }
 
@@ -755,8 +813,8 @@ String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::
 	
 	if (!error){
 		salida = salida + "***  No se detectaron errores ***";
-		salida = salida + "\n Generando el codigo P";
-		generarCodigoP(codigoSeparado, FUENTE_DIR, NOMBRE_FILE);
+		salida = salida + "\nGenerando el codigo P";
+		salida = salida + generarCodigoP(codigoSeparado, FUENTE_DIR, NOMBRE_FILE);
 	}
 	else{
 		salida = salida + "Errores detectados\n*****No se genero el ejecutable*****";
@@ -768,6 +826,10 @@ String^ parsearCodigo(String^ codigoFuente, array<String^>^ codigoSeparado, Syst
 	int cantidadParentesisApertura = codigoFuente->Split('(')->Length;
 	int cantidadParentesisCierre = codigoFuente->Split(')')->Length;
 	
+	// inicializo a 0 todos los contadores por si ya se dio una ejecucion antes
+	indexTablaSimbolos = 0;
+	indexStack = 0;
+
 	// revisa que para cada apertura haya un cierre, si no es asi, desde aqui estamos mal
 	if (cantidadParentesisApertura != cantidadParentesisCierre){
 		return "Error: la cantidad de parentesis de apertura no corresponde con la cantidad de parentesis de cierre";

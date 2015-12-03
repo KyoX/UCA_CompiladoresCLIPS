@@ -17,6 +17,7 @@ public:
 	int getTipoVariable();
 	void setNivel(int _nivel);
 	void setValue(String^ valor);
+	void setIndiceStack(int i);
 
 private:
 	char nombre[100];
@@ -35,9 +36,7 @@ TDS::~TDS()
 {
 }
 void StringToArray(String^ cad, char* arreglo){
-	//char arreglo[100] = { 0 };
 	sprintf(arreglo, "%s", cad);
-	//return arreglo;
 }
 
 void TDS::insert(String^ _nombre, int _tipoVariable, int _tipoRetorno,String^ _valor, int _indiceStack){
@@ -63,9 +62,13 @@ void TDS::setNivel(int _nivel){
 void TDS::setValue(String^ _valor){
 	StringToArray(_valor, valor);
 }
+void TDS::setIndiceStack(int i){
+	indiceStack = i;
+}
 
 TDS* tablaDeSimbolos[MAX_SIZE_SYMBOLS];
 int indexTablaSimbolos = 0;
+int indexStack = 0;
 
 int readFunction(array<String^>^ temp, int index){
 	if (temp[index]->Equals("(") && temp[index + 1]->Equals("read")){
@@ -244,6 +247,10 @@ int assertFunction(array<String^>^ temp, int index){
 		if (!existe) {
 			tablaDeSimbolos[indexTablaSimbolos] = simbolo;
 			indexTablaSimbolos++;
+		}
+		else {
+			// ya esta definido, no deja inicializarlo
+			return -1;
 		}
 		return 6;
 	}
@@ -622,14 +629,64 @@ int if_function(array<String^>^ temp, int index){
 	return -1;
 }
 
-String^ generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_FILE){
+int buscarVariableEnStack(String^ variable){
 	String^ nombre;
-	
+	for (int i = 0; i < indexTablaSimbolos; i++) {
+		nombre = gcnew String(tablaDeSimbolos[i]->getNombre());
+		if (nombre->Equals(variable)){
+			return i;
+		}
+	}
+	return -1;
+}
+
+List<String^>^ evaluarLinea(String^ lineaCodigo){
+	List<String^>^ bloque = gcnew List<String^>();
+
+	if (lineaCodigo->Length > 0){
+
+	}
+
+	return bloque;
+}
+
+void generarCodigoP(array<String^>^ codigo, String^ FUENTE_DIR, String^ NOMBRE_FILE){
+	String^ nombre;
+	String^ valor;
+	String^ codP;
+	List<String^>^ programa = gcnew List<String^>();
+	List<String^>^ bloque;
+
 	//sentencias de almacenado de las variables
 	for (int i = 0; i < indexTablaSimbolos; i++){
 		nombre = gcnew String(tablaDeSimbolos[i]->getNombre());
+		valor = gcnew String(tablaDeSimbolos[i]->getValor());
+		tablaDeSimbolos[i]->setNivel(0);				// 0 significa que es global, no esta dentro de ninguna funcion
+		tablaDeSimbolos[i]->setIndiceStack(indexStack);
+		indexStack++;
+		codP = "LIT 0 "+valor;
+		programa->Add(codP);
 	}
-	return "algo";
+	
+	
+	// resto del programa
+	for (int i = 0; i < codigo->Length; i++){
+		bloque = evaluarLinea(codigo[i]);
+		for each (String^ instruccion in bloque) {
+			programa->Add(instruccion);
+		}
+	}
+
+
+	// creacion del archivo
+	System::IO::StreamWriter^ sw = gcnew System::IO::StreamWriter(FUENTE_DIR+NOMBRE_FILE+".ob");
+	for each (String^ instruccion in programa) {
+		sw->WriteLine(instruccion);
+	}
+	sw->Close();
+
+
+
 }
 
 String^ perteneceSemantico(List<String^>^ tockensIndividuales, System::Windows::Forms::RichTextBox^  richTextBox, array<String^>^ codigoSeparado, String^ FUENTE_DIR, String^ NOMBRE_FILE){
